@@ -1,0 +1,87 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "rmdir",
+            "args": [
+                "-r",
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "dirmgr",
+            "type": "shell",
+            "command": "mkdir",
+            "args": [
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": ["clean"]
+        },
+		{
+			"label": "cmake",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}\\build"
+			},
+			"command": "cmake",
+			"args":[
+				"-G",
+				"MinGW Makefiles",
+				// "-DCMAKE_BUILD_TYPE=Debug",
+				// "-DCMAKE_C_COMPILER=gcc",
+				// "-DCMAKE_CXX_COMPILER=g++",
+				// "-DCMAKE_MAKE_PROGRAM=mingw32-make",
+				// "-DCMAKE_SH=CMAKE_SH-NOTFOUND",
+				// "-DCMAKE_CXX_FLAGS=-g",
+				// "-DCMAKE_C_FLAGS=-g",
+				"-DCMAKE_SYSTEM_PROCESSOR=x86_64",
+				".."
+			],
+            "dependsOn":["dirmgr"]
+		},
+		{
+			"label": "make",
+			"type": "shell",
+			"command": "mingw32-make",
+			"options": {
+				"cwd": "${workspaceFolder}\\build"
+			},
+			"dependsOn":["cmake"]
+		},
+		{
+			"label": "CMake-build",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}\\build"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": ["make"]
+		},
+        {
+			"label": "CMake-build(PowerShell)",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+            "command": "powershell",
+            "args": [
+                "./build.ps1",
+            ],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+		}
+	]
+}
